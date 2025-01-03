@@ -1,12 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import frc.robot.Constants;
@@ -57,14 +59,15 @@ public class SwerveSubsystem extends SubsystemBase {
         };
 
         odometry = new SwerveDriveOdometry(
-        kinematics,
-        new Rotation2d(),
-        new SwerveModulePosition[] {
-        swerveModules[0].getPosition(),
-        swerveModules[1].getPosition(),
-        swerveModules[2].getPosition(),
-        swerveModules[3].getPosition()
-    });
+            kinematics,
+            Rotation2d.fromDegrees(gyro.getYaw().getValue()), // Use gyro heading
+            new SwerveModulePosition[] {
+                swerveModules[0].getPosition(),
+                swerveModules[1].getPosition(),
+                swerveModules[2].getPosition(),
+                swerveModules[3].getPosition()
+            }
+        );
     }
 
     public void drive(double vx, double vy, double omega) {
@@ -99,5 +102,17 @@ public class SwerveSubsystem extends SubsystemBase {
                swerveModules[3].getPosition()
             }
         );
+
+        // Report telemetry
+        Pose2d pose = odometry.getPoseMeters();
+        SmartDashboard.putNumber("Pose X", pose.getX());
+        SmartDashboard.putNumber("Pose Y", pose.getY());
+        SmartDashboard.putNumber("Pose Heading", pose.getRotation().getDegrees());
+
+        SmartDashboard.putNumber("Gyro Heading", gyro.getYaw().getValue());
+
+        for (SwerveModule module : swerveModules) {
+            module.reportTelemetry();
+        }
     }
 }

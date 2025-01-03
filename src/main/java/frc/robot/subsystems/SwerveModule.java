@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class SwerveModule {
@@ -49,6 +50,10 @@ public class SwerveModule {
         double angleOutput = anglePID.calculate(currentAngle, targetAngle);
     
         turnMotor.set(angleOutput);
+
+        // Add telemetry for desired state
+        SmartDashboard.putNumber("Desired Speed (" + driveMotor.getDeviceId() + ")", desiredState.speedMetersPerSecond);
+        SmartDashboard.putNumber("Desired Angle (" + driveMotor.getDeviceId() + ")", desiredState.angle.getDegrees());
     }
 
     public SwerveModuleState getState() {
@@ -69,5 +74,11 @@ public class SwerveModule {
         double distance = driveMotor.getEncoder().getPosition(); // Replace with actual distance retrieval method
         double angle = Math.toRadians(encoder.getAbsolutePosition().getValue());
         return new SwerveModulePosition(distance, Rotation2d.fromRadians(angle));
+    }
+
+    public void reportTelemetry() {
+        SwerveModuleState state = getState();
+        SmartDashboard.putNumber("Speed (" + driveMotor.getDeviceId() + ")", state.speedMetersPerSecond);
+        SmartDashboard.putNumber("Angle (" + driveMotor.getDeviceId() + ")", state.angle.getDegrees());
     }
 }
