@@ -1,14 +1,13 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.ctre.phoenix.sensors.CANCoder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+
 import frc.robot.Constants;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -52,7 +51,15 @@ public class SwerveSubsystem extends SubsystemBase {
             )
         };
 
-        odometry = new SwerveDriveOdometry(kinematics, new Rotation2d());
+        odometry = new SwerveDriveOdometry(
+        kinematics,
+        new Rotation2d(),
+        new SwerveModulePosition[] {
+        swerveModules[0].getPosition(),
+        swerveModules[1].getPosition(),
+        swerveModules[2].getPosition(),
+        swerveModules[3].getPosition()
+    });
     }
 
     public void drive(double vx, double vy, double omega) {
@@ -68,10 +75,11 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
         odometry.update(
             Rotation2d.fromDegrees(0), // Replace with gyro value
-            swerveModules[0].getState(),
-            swerveModules[1].getState(),
-            swerveModules[2].getState(),
-            swerveModules[3].getState()
-        );
+            new SwerveModulePosition[] {
+                swerveModules[0].getPosition(),
+                swerveModules[1].getPosition(),
+                swerveModules[2].getPosition(),
+                swerveModules[3].getPosition()
+            });
     }
 }
