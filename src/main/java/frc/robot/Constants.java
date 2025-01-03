@@ -8,6 +8,8 @@ public final class Constants {
         public static final double WHEELBASE = 0.5; // meters
         public static final double TRACKWIDTH = 0.5; // meters
         public static final double MAX_SPEED = 4.0; // meters per second
+        
+        public static final int PIGEON_ID = 13; // Replace 13 with your actual CAN ID
 
         public static final Translation2d FRONT_LEFT_LOCATION = new Translation2d(WHEELBASE / 2, TRACKWIDTH / 2);
         public static final Translation2d FRONT_RIGHT_LOCATION = new Translation2d(WHEELBASE / 2, -TRACKWIDTH / 2);
